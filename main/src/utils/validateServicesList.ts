@@ -5,5 +5,6 @@ import SERVICES from '../constants/SERVICES';
 	All services in the param list should be on the SERVICES else returns false
 **/
 export default  function validateServicesList(services:Array<string>): boolean {
-	return services.every((v: string) => SERVICES.includes(v));
+	const servicesMap = Object.values(SERVICES);
+	return services.every((v: string) => servicesMap.includes(v));
 }

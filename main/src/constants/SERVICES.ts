@@ -1,6 +1,6 @@
-const SERVICES = [
-	'IPCALLSTACK',
-	'RDAP'
-];
+const SERVICES = {
+	GEOIP: 'GEOIP',
+	RDAP: 'RDAP'
+};
 
 export default SERVICES;

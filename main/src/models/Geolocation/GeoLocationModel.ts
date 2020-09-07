@@ -1,6 +1,7 @@
 import LocationModel from './LocationModel';
+import PayloadModel from '../Payload';
 
-interface GeoLocationModel {
+interface GeoLocationModel extends PayloadModel{
 	ip: string
 	type: string
 	continent_code: string

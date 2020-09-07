@@ -28,13 +28,13 @@ export default async function ipValidatorHelper(address: string, services: Array
 				response.ip = lookupResponse.address;
 			} else {
 				response.isValid = false;
-				response.error = 'Validation error: the input Ip on the parameters is not valid';
+				response.error = 'Validation error: invalid ip/domain';
 			}
 		}
 		// Validate the services array
 		if (!validateServicesList(services)) {
 			response.isValid = false;
-			response.error = 'Validation error: the is a Issue with the list of services';
+			response.error = 'Validation error: One of the requested services doesn\'t exist';
 		}
 		return response
 	} catch (e) {
