@@ -1,7 +1,7 @@
 import { Application } from '../declarations';
-import MessageService from './MessageService';
+import IpInformationService from './IpInformationService';
 
 export default function (app: Application): void {
 	// Register our messages service
-	app.use('/messages', new MessageService());
+	app.use('ip', new IpInformationService());
 }

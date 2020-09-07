@@ -27,9 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 app.configure(express.rest());
 app.configure(socketio());
 
-// Configure other middleware (see `middleware/index.js`)
 app.configure(middleware);
-// Set up our services (see `services/index.js`)
 app.configure(services);
 
 // Configure a middleware for 404s and the error handler
