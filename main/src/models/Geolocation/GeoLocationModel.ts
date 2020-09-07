@@ -1,6 +1,6 @@
 import LocationModel from './LocationModel';
 
-interface IpStackModel {
+interface GeoLocationModel {
 	ip: string
 	type: string
 	continent_code: string
@@ -16,4 +16,4 @@ interface IpStackModel {
 	location: LocationModel
 }
 
-export default IpStackModel;
+export default GeoLocationModel;

@@ -1,0 +1,6 @@
+const DEFAULT_SERVICES = [
+	'IPCALLSTACK',
+	'RDAP'
+];
+
+export default DEFAULT_SERVICES;

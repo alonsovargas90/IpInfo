@@ -1,9 +1,11 @@
-import LanguageModel from './LanguageModel';
-
-interface  IpStackLocationModel {
+interface  LocationModel {
 	geoname_id: number,
 	capital: string,
-	languages: LanguageModel[],
+	languages: { 
+		code: string
+		name: string,
+		native: string 
+	}[],
 	country_flag: string,
 	country_flag_emoji: string,
 	country_flag_emoji_unicode: string,
@@ -11,5 +13,5 @@ interface  IpStackLocationModel {
 	is_eu: false,
 }
 
-export default IpStackLocationModel;
+export default LocationModel;
 
