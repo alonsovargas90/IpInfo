@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Params } from '@feathersjs/feathers';
 import DEFAULT_SERVICES from '../constants/DEFAULT_SERVICES';
 import ipValidatorHelper from '../utils/ipValidatorHelper';
-import GeoLocationModel from '../models/Geolocation/GeoLocationModel';
 import IpInformationModel from '../models/IpInformationModel';
 import SERVICES from '../constants/SERVICES';
 import RDAPModel from '../models/RDAP/RDAPModel';
@@ -70,13 +69,14 @@ class IpInformationService {
 	//TODO Call for microservice of ipStack
 	async retriveGeoInformation(ipAddress: string): Promise<ServiceResponseModel> {
 		try {
-			//TODO move this to a micro service
-			const response = await axios.get(`http://api.ipstack.com/${ipAddress}?access_key=f554f72017127797b2f492b83e67ec29`);
+			const response = await axios.get(`http://localhost:3031?ip=${ipAddress}`);
+			const x = response.data;
 			if (response.data?.error) {
 				throw new Error(response.data.error.info);
 			}
-			const geoInfo: GeoLocationModel = { ...response.data };
-			const serviceResponse = { payload: geoInfo,  service: SERVICES.GEOIP } as ServiceResponseModel;
+			console.dir(x, {colors: true, depth: 2 });
+			console.dir(x?.service, {colors: true, depth: 2 });
+			const serviceResponse = { payload: response.data.payload,  service: response.data.service } as ServiceResponseModel;
 			return serviceResponse;
 		} catch (e) {
 			logger.error('Requesting information form IpStack microservice failed', e);
