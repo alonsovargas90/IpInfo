@@ -11,7 +11,7 @@ import ServiceResponseModel from '../models/ServiceResponseModel';
 
 class IpInformationService {
 	/** 
-		** POST route that will get all information the ip
+		** POST route that will get all available information the ip
 		@param ipAddress : v4 Ip address that will be used to look up all available information from the microservices
 		@param services: List of services that will called if not included a defualt list will be used instead
 	**/
@@ -93,7 +93,7 @@ class IpInformationService {
 				throw new Error(response.data.error?.info);
 			}
 			const rdpaInfo: RDAPModel = { ...response.data };
-			const serviceResponse = { payload: rdpaInfo,  service: SERVICES.GEOIP } as ServiceResponseModel;
+			const serviceResponse = { payload: rdpaInfo,  service: SERVICES.RDAP } as ServiceResponseModel;
 			return serviceResponse;
 		} catch (e) {
 			logger.error('Requesting information form fecthRDAP microservice failed', e);
