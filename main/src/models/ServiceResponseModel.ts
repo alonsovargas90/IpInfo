@@ -1,8 +1,11 @@
 import PayloadModel from './Payload';
 
 interface ServiceResponseModel {
-	service: string,
-	payload: PayloadModel
+	data: {
+		error: string,
+		service: string,
+		payload: PayloadModel
+	}
 }
 
 export default ServiceResponseModel;

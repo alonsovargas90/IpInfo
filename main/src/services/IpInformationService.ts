@@ -47,8 +47,8 @@ class IpInformationService {
 					promises.push(this.retriveGeoInformation(model.ip));
 					break;
 				case SERVICES.RDAP:
-					order.push(service);
-					promises.push(this.retriveGeoInformation(model.ip));
+					// order.push(service);
+					// promises.push(this.retriveGeoInformation(model.ip));
 					break;
 				}
 			}
@@ -70,13 +70,11 @@ class IpInformationService {
 	async retriveGeoInformation(ipAddress: string): Promise<ServiceResponseModel> {
 		try {
 			const response = await axios.get(`http://localhost:3031?ip=${ipAddress}`);
-			const x = response.data;
 			if (response.data?.error) {
 				throw new Error(response.data.error.info);
 			}
-			console.dir(x, {colors: true, depth: 2 });
-			console.dir(x?.service, {colors: true, depth: 2 });
-			const serviceResponse = { payload: response.data.payload,  service: response.data.service } as ServiceResponseModel;
+			console.dir(response.data, {colors: true, depth: 2 });
+			const serviceResponse = { ...response.data.data} as ServiceResponseModel;
 			return serviceResponse;
 		} catch (e) {
 			logger.error('Requesting information form IpStack microservice failed', e);
@@ -85,21 +83,21 @@ class IpInformationService {
 	}
 
 	//TODO Call for microservice of rdap
-	async retriveRDAPInformation(ipAddress: string): Promise<ServiceResponseModel> {
-		try {
-			//TODO move this to a micro service
-			const response = await axios.get(`https://www.rdap.net/ip/${ipAddress}`);
-			if (response.data.error) {
-				throw new Error(response.data.error?.info);
-			}
-			const rdpaInfo: RDAPModel = { ...response.data };
-			const serviceResponse = { payload: rdpaInfo,  service: SERVICES.RDAP } as ServiceResponseModel;
-			return serviceResponse;
-		} catch (e) {
-			logger.error('Requesting information form fecthRDAP microservice failed', e);
-			throw e;
-		}
-	}
+	// async retriveRDAPInformation(ipAddress: string): Promise<ServiceResponseModel> {
+	// 	try {
+	// 		//TODO move this to a micro service
+	// 		const response = await axios.get(`https://www.rdap.net/ip/${ipAddress}`);
+	// 		if (response.data.error) {
+	// 			throw new Error(response.data.error?.info);
+	// 		}
+	// 		const rdpaInfo: RDAPModel = { ...response.data };
+	// 		const serviceResponse = { payload: rdpaInfo,  service: SERVICES.RDAP } as ServiceResponseModel;
+	// 		return serviceResponse;
+	// 	} catch (e) {
+	// 		logger.error('Requesting information form fecthRDAP microservice failed', e);
+	// 		throw e;
+	// 	}
+	// }
 }
 
 export default IpInformationService;

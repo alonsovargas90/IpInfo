@@ -19,7 +19,7 @@ class GeoService {
 				throw new Error(response.data.error.info);
 			}
 			const geoInfo: GeoLocationModel = { ...response.data };
-			const serviceResponse = { data: { payload: geoInfo,  service: 'GEOIP', error: ''} } as ServiceResponseModel;
+			const serviceResponse =  { data: { payload: geoInfo,  service: 'GEOIP', error: ''} } as ServiceResponseModel;
 			return serviceResponse;
 		} catch (e) {
 			logger.error('Requesting information form IpStack microservice failed', e);
