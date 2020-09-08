@@ -1,4 +1,9 @@
 {
   "host": "localhost",
-  "port": 3030
+  "port": 3030,
+  "services": {
+    "GEOIP": "http://localhost:3031",
+    "RDAP": "http://localhost:3032",
+    "REVERSE_DNS": "http://localhost:3033"
+  }
 }

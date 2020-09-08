@@ -1,5 +1,5 @@
 import LocationModel from './LocationModel';
-import PayloadModel from '../Payload';
+import PayloadModel from './Payload';
 
 interface GeoLocationModel extends PayloadModel{
 	ip: string

@@ -1,12 +1,17 @@
 import logger from '../logger';
 import axios from 'axios';
 import { Params } from '@feathersjs/feathers';
+import feathers from '@feathersjs/feathers';
+import configuration from '@feathersjs/configuration';
 import DEFAULT_SERVICES from '../constants/DEFAULT_SERVICES';
 import ipValidatorHelper from '../utils/ipValidatorHelper';
 import IpInformationModel from '../models/IpInformationModel';
 import SERVICES from '../constants/SERVICES';
 import RDAPModel from '../models/RDAP/RDAPModel';
 import ServiceResponseModel from '../models/ServiceResponseModel';
+
+const app = feathers().configure(configuration());
+const SERVICES_URL = app.get('services');
 
 class IpInformationService {
 	/** 
@@ -38,17 +43,14 @@ class IpInformationService {
 	async retriveAllInformation(model: IpInformationModel): Promise<Array<ServiceResponseModel>> {
 		try {
 			const promises = [];
-			const order:Array<string> = [];
 
 			for (const service of Object.values(model.services)) {
 				switch (service) {
 				case SERVICES.GEOIP:
-					order.push(service);
 					promises.push(this.retriveGeoInformation(model.ip));
 					break;
-				case SERVICES.RDAP:
-					// order.push(service);
-					// promises.push(this.retriveGeoInformation(model.ip));
+				case SERVICES.REVERSE_DNS:
+					promises.push(this.retriveReverseDnsInformation(model.ip));
 					break;
 				}
 			}
@@ -65,19 +67,31 @@ class IpInformationService {
 			throw e;
 		}
 	}
-
-	//TODO Call for microservice of ipStack
+	
 	async retriveGeoInformation(ipAddress: string): Promise<ServiceResponseModel> {
 		try {
-			const response = await axios.get(`http://localhost:3031?ip=${ipAddress}`);
+			const response = await axios.get(`${SERVICES_URL.GEOIP}?ip=${ipAddress}`);
 			if (response.data?.error) {
 				throw new Error(response.data.error.info);
 			}
-			console.dir(response.data, {colors: true, depth: 2 });
 			const serviceResponse = { ...response.data.data} as ServiceResponseModel;
 			return serviceResponse;
 		} catch (e) {
 			logger.error('Requesting information form IpStack microservice failed', e);
+			throw e;
+		}
+	}
+	async retriveReverseDnsInformation(ipAddress: string): Promise<ServiceResponseModel> {
+		try {
+			//TODO move this to a micro service
+			const response = await axios.get(`${SERVICES_URL.REVERSE_DNS}?ip=${ipAddress}`);
+			if (response.data.error) {
+				throw new Error(response.data.error?.info);
+			}
+			const serviceResponse = { ...response.data.data} as ServiceResponseModel;
+			return serviceResponse;
+		} catch (e) {
+			logger.error('Requesting information form fecthRDAP microservice failed', e);
 			throw e;
 		}
 	}

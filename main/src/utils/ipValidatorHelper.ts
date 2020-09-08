@@ -1,5 +1,4 @@
 import dns from 'dns';
-import util from 'util';
 import logger from '../logger';
 import validateIpAdress from './validateIpAdress';
 import IpInformationModel from '../models/IpInformationModel';
@@ -9,7 +8,7 @@ import validateServicesList from './validateServicesList';
 	Helper that will be used for standarizing the param into a valid ipv4 address 
 	@param value is neither a ipv4 or a domain then it will return false
 **/
-const lookup = util.promisify(dns.lookup);
+const dnsPromises = dns.promises;
 
 export default async function ipValidatorHelper(address: string, services: Array<string>): Promise<IpInformationModel> {
 	try {
@@ -23,7 +22,7 @@ export default async function ipValidatorHelper(address: string, services: Array
 			response.ip = address;
 		} else {
 			// If the params is not a ip check if its a valid domian
-			const lookupResponse = await lookup(address);
+			const lookupResponse = await dnsPromises.lookup(address);
 			if (lookupResponse && lookupResponse.address) {
 				response.ip = lookupResponse.address;
 			} else {
