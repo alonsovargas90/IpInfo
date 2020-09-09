@@ -8,6 +8,7 @@ import ipValidatorHelper from '../utils/ipValidatorHelper';
 import IpInformationModel from '../models/IpInformationModel';
 import SERVICES from '../constants/SERVICES';
 import ServiceResponseModel from '../models/ServiceResponseModel';
+import { BadRequest } from '@feathersjs/errors';
 
 const app = feathers().configure(configuration());
 const SERVICES_URL = app.get('services');
@@ -28,13 +29,17 @@ class IpInformationService {
 
 			if (!model.isValid) {
 				logger.debug(`Validation failed: ${model.ip}, ${model.services}`);
-				throw new Error(model.error);
+				throw new BadRequest(model.error);
 			}
 			logger.debug('Request Information from all Microservices');
 			// Fetch the information from the microservices
 			const information: Array<ServiceResponseModel> = await this.retriveAllInformation(model);
 			return information;
 		} catch (e) {
+			//TODO improve error handling
+			if (e.name === 'BadRequest') {
+				throw e;
+			}
 			logger.error('Error: There was a error on finding information for the ip', e);
 			throw new Error('There was a error on finding information for the ip');
 		}
