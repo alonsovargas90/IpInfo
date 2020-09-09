@@ -71,8 +71,10 @@ class IpInformationService {
 		}
 	}
 	
+	// Microservice calls
 	async retriveGeoInformation(ipAddress: string): Promise<ServiceResponseModel> {
 		try {
+			logger.debug('Retriving information from the GEO ip service', ipAddress);
 			const response = await axios.get(`${SERVICES_URL.GEOIP}?ip=${ipAddress}`);
 			if (response.data?.error) {
 				throw new Error(response.data.error.info);
@@ -86,6 +88,7 @@ class IpInformationService {
 	}
 	async retriveRDAPInformation(ipAddress: string): Promise<ServiceResponseModel> {
 		try {
+			logger.debug('Retriving information from the RDAP service', ipAddress);
 			const response = await axios.get(`${SERVICES_URL.RDAP}?ip=${ipAddress}`);
 			if (response.data?.error) {
 				throw new Error(response.data.error.info);
@@ -99,7 +102,7 @@ class IpInformationService {
 	}
 	async retriveReverseDnsInformation(ipAddress: string): Promise<ServiceResponseModel> {
 		try {
-			//TODO move this to a micro service
+			logger.debug('Retriving information from the Reverse DNS service', ipAddress);
 			const response = await axios.get(`${SERVICES_URL.REVERSE_DNS}?ip=${ipAddress}`);
 			if (response.data.error) {
 				throw new Error(response.data.error?.info);

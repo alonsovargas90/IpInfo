@@ -12,8 +12,8 @@ const API_URL = app.get('API_URL');
 class RDAPService {
 	async find(params: Params ): Promise<ServiceResponseModel> {
 		try {
-			logger.debug('Request Information for the RDAP API ...');
 			const ipAddress = params?.query?.ip || '';
+			logger.info(`Request Information for the RDAP API ... ip: ${ipAddress}`);
 			const response = await axios.get(`${API_URL}${ipAddress}`);
 			if (response.data?.error) {
 				throw new Error(response.data.error.info);

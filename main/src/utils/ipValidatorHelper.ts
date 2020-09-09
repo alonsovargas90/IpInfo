@@ -12,7 +12,7 @@ const dnsPromises = dns.promises;
 
 export default async function ipValidatorHelper(address: string, services: Array<string>): Promise<IpInformationModel> {
 	try {
-		logger.debug(`validation the params ... ${address} , ${services}`);
+		logger.debug(`validating the params ... ${address} , ${services}`);
 		const response = {} as IpInformationModel;
 		response.isValid = true;
 		response.ip = address;

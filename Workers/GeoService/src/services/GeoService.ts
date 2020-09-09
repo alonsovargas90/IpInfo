@@ -13,8 +13,8 @@ const API_URL = app.get('API_URL');
 class GeoService {
 	async find(params: Params ): Promise<ServiceResponseModel> {
 		try {
-			logger.debug('Request Information for the GEO IP API ...');
 			const ipAddress = params?.query?.ip || '';
+			logger.info(`Request Information for the GEO IP API ... ip:${ipAddress}`);
 			const response = await axios.get(`${API_URL}/${ipAddress}?access_key=${API_KEY}`);
 			if (response.data?.error) {
 				throw new Error(response.data.error.info);

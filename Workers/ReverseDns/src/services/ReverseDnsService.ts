@@ -8,9 +8,9 @@ const dnsPromises = dns.promises;
 class ReverseDnsService {
 	async find(params: Params ): Promise<ServiceResponseModel> {
 		try {
-			logger.debug('Request Information for the Reverse DNS lookup ...');
 			let dnsReverseModel:any;
 			const ipAddress = params?.query?.ip || '';
+			logger.info(`Request Information for the Reverse DNS lookup ... ip:${ipAddress}`);
 			try{
 				const response = await dnsPromises.reverse(ipAddress);
 				dnsReverseModel = { domain: response } as ReverseDnsModel;
