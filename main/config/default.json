@@ -4,6 +4,7 @@
   "services": {
     "GEOIP": "http://localhost:3031",
     "RDAP": "http://localhost:3032",
-    "REVERSE_DNS": "http://localhost:3033"
+    "REVERSE_DNS": "http://localhost:3033",
+    "VIRUS_TOTAL": "http://localhost:3034"
   }
 }

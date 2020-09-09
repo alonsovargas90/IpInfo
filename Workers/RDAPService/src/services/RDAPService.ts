@@ -18,11 +18,11 @@ class RDAPService {
 			if (response.data?.error) {
 				throw new Error(response.data.error.info);
 			}
-			const geoInfo: RDAPModel = { ...response.data };
-			const serviceResponse =  { data: { payload: geoInfo,  service: 'RDAP', error: ''} } as ServiceResponseModel;
+			const payload: RDAPModel = { ...response.data };
+			const serviceResponse =  { data: { payload,  service: 'RDAP', error: ''} } as ServiceResponseModel;
 			return serviceResponse;
 		} catch (e) {
-			logger.error('Requesting information form IpStack microservice failed', e);
+			logger.error('Requesting information from RDAP microservice failed', e);
 			throw e;
 		}
 	}

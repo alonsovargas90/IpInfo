@@ -1,0 +1,6 @@
+{
+  "host": "localhost",
+  "port": 3034,
+  "API_URL": "https://www.virustotal.com/api/v3/ip_addresses",
+  "API_key": "5dd9d56beb7f4a8fd76828ceb90b7a6fe1759035ccfe8706cac241dd274cb443"
+}

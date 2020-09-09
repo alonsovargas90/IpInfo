@@ -55,6 +55,9 @@ class IpInformationService {
 				case SERVICES.REVERSE_DNS:
 					promises.push(this.retriveReverseDnsInformation(model.ip));
 					break;
+				case SERVICES.VIRUS_TOTAL:
+					promises.push(this.retriveVirusTotalInformation(model.ip));
+					break;
 				}
 			}
 			return Promise.all(promises)
@@ -110,7 +113,21 @@ class IpInformationService {
 			const serviceResponse = { ...response.data.data} as ServiceResponseModel;
 			return serviceResponse;
 		} catch (e) {
-			logger.error('Requesting information form fecthRDAP microservice failed', e);
+			logger.error('Requesting information form Reverse DNS microservice failed', e);
+			throw e;
+		}
+	}
+	async retriveVirusTotalInformation(ipAddress: string): Promise<ServiceResponseModel> {
+		try {
+			logger.debug('Retriving information from the Virus total service', ipAddress);
+			const response = await axios.get(`${SERVICES_URL.VIRUS_TOTAL}?ip=${ipAddress}`);
+			if (response.data.error) {
+				throw new Error(response.data.error?.info);
+			}
+			const serviceResponse = { ...response.data.data} as ServiceResponseModel;
+			return serviceResponse;
+		} catch (e) {
+			logger.error('Requesting information form Virus total microservice failed', e);
 			throw e;
 		}
 	}
