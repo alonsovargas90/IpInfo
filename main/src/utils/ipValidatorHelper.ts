@@ -12,6 +12,7 @@ const dnsPromises = dns.promises;
 
 export default async function ipValidatorHelper(address: string, services: Array<string>): Promise<IpInformationModel> {
 	try {
+		logger.debug(`validation the params ... ${address} , ${services}`);
 		const response = {} as IpInformationModel;
 		response.isValid = true;
 		response.ip = address;
@@ -21,6 +22,7 @@ export default async function ipValidatorHelper(address: string, services: Array
 			//If the param comes as a valid ip address use it directly
 			response.ip = address;
 		} else {
+			logger.debug('converting the domain to a ip address' );
 			// If the params is not a ip check if its a valid domian
 			const lookupResponse = await dnsPromises.lookup(address);
 			if (lookupResponse && lookupResponse.address) {

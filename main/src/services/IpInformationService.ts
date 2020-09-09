@@ -7,7 +7,6 @@ import DEFAULT_SERVICES from '../constants/DEFAULT_SERVICES';
 import ipValidatorHelper from '../utils/ipValidatorHelper';
 import IpInformationModel from '../models/IpInformationModel';
 import SERVICES from '../constants/SERVICES';
-import RDAPModel from '../models/RDAP/RDAPModel';
 import ServiceResponseModel from '../models/ServiceResponseModel';
 
 const app = feathers().configure(configuration());
@@ -21,17 +20,18 @@ class IpInformationService {
 	**/
 	async create(body: Params): Promise<Array<ServiceResponseModel>> {
 		try {
-			logger.debug('Request Information Microservice');
+			logger.debug('Request Information ...');
 			const paramAddres = body?.ipAddress ?? '';
 			const paramListOfServices = body?.services ?? DEFAULT_SERVICES;
 			const model: IpInformationModel = await ipValidatorHelper(paramAddres, paramListOfServices);
-			logger.info(`Information Microservice. Fetching information form ip: ${model.ip}, ${model.services}`);
+			logger.info(`Fetching information from the ip: ${model.ip}, from microservices ${model.services}`);
 
 			if (!model.isValid) {
 				logger.debug(`Validation failed: ${model.ip}, ${model.services}`);
 				throw new Error(model.error);
 			}
-			// Fetch the information from the workers
+			logger.debug('Request Information from all Microservices');
+			// Fetch the information from the microservices
 			const information: Array<ServiceResponseModel> = await this.retriveAllInformation(model);
 			return information;
 		} catch (e) {
@@ -43,11 +43,14 @@ class IpInformationService {
 	async retriveAllInformation(model: IpInformationModel): Promise<Array<ServiceResponseModel>> {
 		try {
 			const promises = [];
-
+			// Since we validate preiously all services should have a related case and function to contact the microservice
 			for (const service of Object.values(model.services)) {
 				switch (service) {
 				case SERVICES.GEOIP:
 					promises.push(this.retriveGeoInformation(model.ip));
+					break;
+				case SERVICES.RDAP:
+					promises.push(this.retriveRDAPInformation(model.ip));
 					break;
 				case SERVICES.REVERSE_DNS:
 					promises.push(this.retriveReverseDnsInformation(model.ip));
@@ -81,6 +84,19 @@ class IpInformationService {
 			throw e;
 		}
 	}
+	async retriveRDAPInformation(ipAddress: string): Promise<ServiceResponseModel> {
+		try {
+			const response = await axios.get(`${SERVICES_URL.RDAP}?ip=${ipAddress}`);
+			if (response.data?.error) {
+				throw new Error(response.data.error.info);
+			}
+			const serviceResponse = { ...response.data.data} as ServiceResponseModel;
+			return serviceResponse;
+		} catch (e) {
+			logger.error('Requesting information form IpStack microservice failed', e);
+			throw e;
+		}
+	}
 	async retriveReverseDnsInformation(ipAddress: string): Promise<ServiceResponseModel> {
 		try {
 			//TODO move this to a micro service
@@ -95,23 +111,6 @@ class IpInformationService {
 			throw e;
 		}
 	}
-
-	//TODO Call for microservice of rdap
-	// async retriveRDAPInformation(ipAddress: string): Promise<ServiceResponseModel> {
-	// 	try {
-	// 		//TODO move this to a micro service
-	// 		const response = await axios.get(`https://www.rdap.net/ip/${ipAddress}`);
-	// 		if (response.data.error) {
-	// 			throw new Error(response.data.error?.info);
-	// 		}
-	// 		const rdpaInfo: RDAPModel = { ...response.data };
-	// 		const serviceResponse = { payload: rdpaInfo,  service: SERVICES.RDAP } as ServiceResponseModel;
-	// 		return serviceResponse;
-	// 	} catch (e) {
-	// 		logger.error('Requesting information form fecthRDAP microservice failed', e);
-	// 		throw e;
-	// 	}
-	// }
 }
 
 export default IpInformationService;

@@ -1,0 +1,5 @@
+{
+  "host": "localhost",
+  "port": 3032,
+  "API_URL": "https://rdap.lacnic.net/rdap/ip/"
+}
