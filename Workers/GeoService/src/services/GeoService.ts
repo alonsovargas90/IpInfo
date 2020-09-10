@@ -10,7 +10,8 @@ const app = feathers().configure(configuration());
 const API_KEY = app.get('API_key');
 const API_URL = app.get('API_URL');
 
-class GeoService {
+class GeoService{
+	docs: any;
 	async find(params: Params ): Promise<ServiceResponseModel> {
 		try {
 			const ipAddress = params?.query?.ip || '';

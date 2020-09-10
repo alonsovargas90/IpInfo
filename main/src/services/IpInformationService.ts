@@ -40,6 +40,7 @@ class IpInformationService {
 			if (e.name === 'BadRequest') {
 				throw e;
 			}
+			//Untype error throw 500
 			logger.error('Error: There was a error on finding information for the ip', e);
 			throw new Error('There was a error on finding information for the ip');
 		}
