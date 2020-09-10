@@ -10,7 +10,7 @@ const app = feathers().configure(configuration());
 const API_KEY = app.get('API_key');
 const API_URL = app.get('API_URL');
 
-class GeoService {
+class LocationService {
 	async find(params: Params ): Promise<ServiceResponseModel> {
 		try {
 			const ipAddress = params?.query?.ip || '';
@@ -20,7 +20,7 @@ class GeoService {
 				throw new Error(response.data.error.info);
 			}
 			const payload: GeoLocationModel = { ...response.data };
-			const serviceResponse =  { data: { payload,  service: 'GEOIP', error: ''} } as ServiceResponseModel;
+			const serviceResponse =  { data: { payload,  service: 'LOCATION', error: ''} } as ServiceResponseModel;
 			return serviceResponse;
 		} catch (e) {
 			logger.error('Requesting information from geolocation microservice failed', e);
@@ -29,4 +29,4 @@ class GeoService {
 	}
 }
 
-export default GeoService;
+export default LocationService;

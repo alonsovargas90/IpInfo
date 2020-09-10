@@ -1,4 +1,4 @@
-interface IpInformationModel {
+interface ValidationModel {
     ip: string;
     domain: string;
     services: Array<string>;
@@ -6,4 +6,4 @@ interface IpInformationModel {
     error: string
 }
 
-export default IpInformationModel;
+export default ValidationModel;

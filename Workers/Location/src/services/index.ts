@@ -1,7 +1,7 @@
 import { Application } from '../declarations';
-import GeoService from './GeoService';
+import LocationService from './LocationService';
 
 export default function (app: Application): void {
 	// Register our messages service
-	app.use('/', new GeoService());
+	app.use('/v1/location', new LocationService());
 }

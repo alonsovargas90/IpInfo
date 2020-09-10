@@ -1,0 +1,180 @@
+{
+	"info": {
+		"_postman_id": "3a59c131-f0b2-471c-aa6a-4933e312adbd",
+		"name": "Code Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Main Service",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"ipAddress\": \"142.250.64.164\",\n\t\"services\": [\n\t\t\"LOCATION\",\n\t\t\"RDAP\",\n\t\t\"REVERSE_DNS\",\n\t\t\"VIRUS_TOTAL\"\n\t]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3030/ip",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3030",
+					"path": [
+						"ip"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reverse DNS Microservice",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3033/v1/reverse-dns?ip=142.250.64.164",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3033",
+					"path": [
+						"v1",
+						"reverse-dns"
+					],
+					"query": [
+						{
+							"key": "ip",
+							"value": "142.250.64.164"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Location Microservice",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3031/v1/location/?ip=142.250.64.164",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3031",
+					"path": [
+						"v1",
+						"location",
+						""
+					],
+					"query": [
+						{
+							"key": "ip",
+							"value": "142.250.64.164"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RDAP Service",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3032/v1/rdpa?ip=142.250.64.164",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3032",
+					"path": [
+						"v1",
+						"rdpa"
+					],
+					"query": [
+						{
+							"key": "ip",
+							"value": "142.250.64.164"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Virus Total MircroService",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3034/v1/virus-total?ip=142.250.64.164",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3034",
+					"path": [
+						"v1",
+						"virus-total"
+					],
+					"query": [
+						{
+							"key": "ip",
+							"value": "142.250.64.164"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "9f590313-65ab-4a82-9289-faaf6d5c8513",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "eccbb401-19db-4e99-a9ce-3b2ec7828e2e",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

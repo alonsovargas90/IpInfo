@@ -5,7 +5,7 @@ import feathers from '@feathersjs/feathers';
 import configuration from '@feathersjs/configuration';
 import DEFAULT_SERVICES from '../constants/DEFAULT_SERVICES';
 import ipValidatorHelper from '../utils/ipValidatorHelper';
-import IpInformationModel from '../models/IpInformationModel';
+import ValidationModel from '../models/ValidationModel';
 import SERVICES from '../constants/SERVICES';
 import ServiceResponseModel from '../models/ServiceResponseModel';
 import { BadRequest } from '@feathersjs/errors';
@@ -24,16 +24,16 @@ class IpInformationService {
 			logger.debug('Request Information ...');
 			const paramAddres = body?.ipAddress ?? '';
 			const paramListOfServices = body?.services ?? DEFAULT_SERVICES;
-			const model: IpInformationModel = await ipValidatorHelper(paramAddres, paramListOfServices);
+			const model: ValidationModel = await ipValidatorHelper(paramAddres, paramListOfServices);
 			logger.info(`Fetching information from the ip: ${model.ip}, from microservices ${model.services}`);
-
+			console.dir(model, {colors: true, depth: 2 });
 			if (!model.isValid) {
 				logger.debug(`Validation failed: ${model.ip}, ${model.services}`);
 				throw new BadRequest(model.error);
 			}
 			logger.debug('Request Information from all Microservices');
 			// Fetch the information from the microservices
-			const information: Array<ServiceResponseModel> = await this.retriveAllInformation(model);
+			const information: Array<ServiceResponseModel> = await this.retrieveInformationHelper(model);
 			return information;
 		} catch (e) {
 			//TODO improve error handling
@@ -45,14 +45,14 @@ class IpInformationService {
 		}
 	}
 
-	async retriveAllInformation(model: IpInformationModel): Promise<Array<ServiceResponseModel>> {
+	async retrieveInformationHelper(model: ValidationModel): Promise<Array<ServiceResponseModel>> {
 		try {
 			const promises = [];
 			// Since we validate preiously all services should have a related case and function to contact the microservice
 			for (const service of Object.values(model.services)) {
 				switch (service) {
-				case SERVICES.GEOIP:
-					promises.push(this.retriveGeoInformation(model.ip));
+				case SERVICES.LOCATION:
+					promises.push(this.retriveLocationInformation(model.ip));
 					break;
 				case SERVICES.RDAP:
 					promises.push(this.retriveRDAPInformation(model.ip));
@@ -80,10 +80,10 @@ class IpInformationService {
 	}
 	
 	// Microservice calls
-	async retriveGeoInformation(ipAddress: string): Promise<ServiceResponseModel> {
+	async retriveLocationInformation(ipAddress: string): Promise<ServiceResponseModel> {
 		try {
-			logger.debug('Retriving information from the GEO ip service', ipAddress);
-			const response = await axios.get(`${SERVICES_URL.GEOIP}?ip=${ipAddress}`);
+			logger.debug('Retriving information from the location service', ipAddress);
+			const response = await axios.get(`${SERVICES_URL.LOCATION}?ip=${ipAddress}`);
 			if (response.data?.error) {
 				throw new Error(response.data.error.info);
 			}

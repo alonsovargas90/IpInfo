@@ -1,5 +1,5 @@
 const DEFAULT_SERVICES = [
-	'IPCALLSTACK',
+	'LOCATION',
 	'RDAP'
 ];
 

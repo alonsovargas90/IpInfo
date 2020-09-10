@@ -2,9 +2,9 @@
   "host": "localhost",
   "port": 3030,
   "services": {
-    "GEOIP": "http://localhost:3031",
-    "RDAP": "http://localhost:3032",
-    "REVERSE_DNS": "http://localhost:3033",
-    "VIRUS_TOTAL": "http://localhost:3034"
+    "LOCATION": "http://localhost:3031/v1/location",
+    "RDAP": "http://localhost:3032/v1/rdap",
+    "REVERSE_DNS": "http://localhost:3033/v1/reverse-dns",
+    "VIRUS_TOTAL": "http://localhost:3034/v1/virus-total"
   }
 }
