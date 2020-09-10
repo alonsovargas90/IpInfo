@@ -4,7 +4,7 @@
   "description": "The Location service",
   "main": "index.js",
   "scripts": {
-    "test": "npm run lint && npm run compile && npm run mocha",
+    "test": "npm run lint && npm run mocha",
     "dev": "ts-node-dev --no-notify src/",
     "mocha": "ts-mocha \"test/**/*.ts\" --recursive --exit",
     "lint": "eslint src/. test/. --config .eslintrc.json --ext .ts --fix"

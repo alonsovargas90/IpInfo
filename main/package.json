@@ -4,10 +4,10 @@
   "description": "The main service",
   "main": "index.js",
   "scripts": {
-    "test": "npm run lint && npm run compile && npm run mocha",
+    "test": "npm run lint && npm run mocha",
     "dev": "ts-node-dev --no-notify src/",
-    "mocha": "ts-mocha \"test/**/*.ts\" --recursive --exit",
-    "lint": "eslint src/. test/. --config .eslintrc.json --ext .ts --fix"
+    "mocha": "ts-mocha \"tests/**/*.ts\" --recursive --exit",
+    "lint": "eslint src/. tests/. --config .eslintrc.json --ext .ts --fix"
   },
   "standard": {
     "env": [
@@ -37,6 +37,7 @@
     "@typescript-eslint/eslint-plugin": "^4.0.1",
     "@typescript-eslint/parser": "^4.0.1",
     "axios": "^0.20.0",
+    "chai": "^4.2.0",
     "eslint": "^7.8.1",
     "mocha": "^8.1.3",
     "shx": "^0.3.2",

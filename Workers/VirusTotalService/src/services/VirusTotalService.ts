@@ -13,11 +13,11 @@ const API_URL = app.get('API_URL');
 class VirusTotalService {
 	async find(params: Params ): Promise<ServiceResponseModel> {
 		try {
-			let config = {
+			const config = {
 				headers: {
 					'x-apikey': API_KEY
 				}
-			}
+			};
 			const ipAddress = params?.query?.ip || '';
 			logger.info(`Request Information for the VirusTotalAPI ... ip:${ipAddress}`);
 			const response = await axios.get(`${API_URL}/${ipAddress}`, config);

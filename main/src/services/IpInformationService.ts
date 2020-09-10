@@ -41,8 +41,8 @@ class IpInformationService {
 			if (e.name === 'BadRequest') {
 				throw e;
 			}
-			logger.error('Error: There was a error on finding information for the ip', e);
-			throw new Error('There was a error on finding information for the ip');
+			logger.error('Error: There was a error on finding information for the Ip', e);
+			throw new Error('There was a error on finding information for the Ip');
 		}
 	}
 

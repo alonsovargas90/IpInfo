@@ -24,10 +24,15 @@ export default async function ipValidatorHelper(address: string, services: Array
 		} else {
 			logger.debug('converting the domain to a ip address' );
 			// If the params is not a ip check if its a valid domian
-			const lookupResponse = await dnsPromises.lookup(address);
-			if (lookupResponse && lookupResponse.address) {
-				response.ip = lookupResponse.address;
-			} else {
+			try {
+				const lookupResponse = await dnsPromises.lookup(address);
+				if (lookupResponse && lookupResponse.address) {
+					response.ip = lookupResponse.address;
+				} else {
+					response.isValid = false;
+					response.error = 'Validation error: invalid ip/domain';
+				}
+			}catch (e){
 				response.isValid = false;
 				response.error = 'Validation error: invalid ip/domain';
 			}
