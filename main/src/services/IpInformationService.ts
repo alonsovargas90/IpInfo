@@ -9,6 +9,7 @@ import ValidationModel from '../models/ValidationModel';
 import SERVICES from '../constants/SERVICES';
 import ServiceResponseModel from '../models/ServiceResponseModel';
 import { BadRequest } from '@feathersjs/errors';
+import promiseRecoveryHelper from '../utils/promiseRecoveryHelper';
 
 const app = feathers().configure(configuration());
 const SERVICES_URL = app.get('services');
@@ -26,7 +27,7 @@ class IpInformationService {
 			const paramListOfServices = body?.services ?? DEFAULT_SERVICES;
 			const model: ValidationModel = await ipValidatorHelper(paramAddres, paramListOfServices);
 			logger.info(`Fetching information from the ip: ${model.ip}, from microservices ${model.services}`);
-			console.dir(model, {colors: true, depth: 2 });
+
 			if (!model.isValid) {
 				logger.debug(`Validation failed: ${model.ip}, ${model.services}`);
 				throw new BadRequest(model.error);
@@ -48,7 +49,6 @@ class IpInformationService {
 	async retrieveInformationHelper(model: ValidationModel): Promise<Array<ServiceResponseModel>> {
 		try {
 			const promises = [];
-			// Since we validate preiously all services should have a related case and function to contact the microservice
 			for (const service of Object.values(model.services)) {
 				switch (service) {
 				case SERVICES.LOCATION:
@@ -63,22 +63,20 @@ class IpInformationService {
 				case SERVICES.VIRUS_TOTAL:
 					promises.push(this.retriveVirusTotalInformation(model.ip));
 					break;
+				default:
+					// NOTE We should never get this
+					// Since we are validating on the ipValidatorHelper that all the params
+					// Exist on the services array
+					break;
 				}
 			}
-			return Promise.all(promises)
-				.catch(function (err) {
-					logger.error('Error: one of the services failed', err);
-					return err;
-				})
-				.then(values => {
-					return values;
-				});
+			return promiseRecoveryHelper(promises);
 		} catch (e) {
-			logger.error('Error: Retriving some of the Services', e);
+			logger.error('Error on Retrive Information helper', e);
 			throw e;
 		}
 	}
-	
+
 	// Microservice calls
 	async retriveLocationInformation(ipAddress: string): Promise<ServiceResponseModel> {
 		try {
@@ -87,10 +85,10 @@ class IpInformationService {
 			if (response.data?.error) {
 				throw new Error(response.data.error.info);
 			}
-			const serviceResponse = { ...response.data.data} as ServiceResponseModel;
+			const serviceResponse = { ...response.data.data } as ServiceResponseModel;
 			return serviceResponse;
 		} catch (e) {
-			logger.error('Requesting information form IpStack microservice failed', e);
+			logger.error('Requesting information from Location microservice failed', e);
 			throw e;
 		}
 	}
@@ -101,10 +99,10 @@ class IpInformationService {
 			if (response.data?.error) {
 				throw new Error(response.data.error.info);
 			}
-			const serviceResponse = { ...response.data.data} as ServiceResponseModel;
+			const serviceResponse = { ...response.data.data } as ServiceResponseModel;
 			return serviceResponse;
 		} catch (e) {
-			logger.error('Requesting information form IpStack microservice failed', e);
+			logger.error('Requesting information from RDAP microservice failed', e);
 			throw e;
 		}
 	}
@@ -115,10 +113,10 @@ class IpInformationService {
 			if (response.data.error) {
 				throw new Error(response.data.error?.info);
 			}
-			const serviceResponse = { ...response.data.data} as ServiceResponseModel;
+			const serviceResponse = { ...response.data.data } as ServiceResponseModel;
 			return serviceResponse;
 		} catch (e) {
-			logger.error('Requesting information form Reverse DNS microservice failed', e);
+			logger.error('Requesting information from Reverse DNS microservice failed', e);
 			throw e;
 		}
 	}
@@ -129,10 +127,10 @@ class IpInformationService {
 			if (response.data.error) {
 				throw new Error(response.data.error?.info);
 			}
-			const serviceResponse = { ...response.data.data} as ServiceResponseModel;
+			const serviceResponse = { ...response.data.data } as ServiceResponseModel;
 			return serviceResponse;
 		} catch (e) {
-			logger.error('Requesting information form Virus total microservice failed', e);
+			logger.error('Requesting information from Virus total microservice failed', e);
 			throw e;
 		}
 	}

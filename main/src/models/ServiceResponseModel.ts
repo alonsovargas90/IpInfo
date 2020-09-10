@@ -1,6 +1,6 @@
 import PayloadModel from './Payload';
 
-interface ServiceResponseModel {
+interface ServiceResponseModel {∂∂
 	data: {
 		error: string,
 		service: string,

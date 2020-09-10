@@ -1,7 +1,7 @@
 import dns from 'dns';
 import logger from '../logger';
 import validateIpAdress from './validateIpAdress';
-import IpInformationModel from '../models/IpInformationModel';
+import ValidationModel from '../models/ValidationModel';
 import validateServicesList from './validateServicesList';
 
 /**
@@ -10,10 +10,10 @@ import validateServicesList from './validateServicesList';
 **/
 const dnsPromises = dns.promises;
 
-export default async function ipValidatorHelper(address: string, services: Array<string>): Promise<IpInformationModel> {
+export default async function ipValidatorHelper(address: string, services: Array<string>): Promise<ValidationModel> {
 	try {
 		logger.debug(`validating the params ... ${address} , ${services}`);
-		const response = {} as IpInformationModel;
+		const response = {} as ValidationModel;
 		response.isValid = true;
 		response.ip = address;
 		response.services = services;
