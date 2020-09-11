@@ -49,26 +49,9 @@ class IpInformationService {
 	async retrieveInformationHelper(model: ValidationModel): Promise<Array<ServiceResponseModel>> {
 		try {
 			const promises = [];
+			// Since we already validated the services array we can map the responses safely
 			for (const service of Object.values(model.services)) {
-				switch (service) {
-				case SERVICES.LOCATION:
-					promises.push(this.retriveLocationInformation(model.ip));
-					break;
-				case SERVICES.RDAP:
-					promises.push(this.retriveRDAPInformation(model.ip));
-					break;
-				case SERVICES.REVERSE_DNS:
-					promises.push(this.retriveReverseDnsInformation(model.ip));
-					break;
-				case SERVICES.VIRUS_TOTAL:
-					promises.push(this.retriveVirusTotalInformation(model.ip));
-					break;
-				default:
-					// NOTE We should never get this
-					// Since we are validating on the ipValidatorHelper that all the params
-					// Exist on the services array
-					break;
-				}
+				promises.push(this.fetchData(model.ip, service));
 			}
 			return promiseRecoveryHelper(promises);
 		} catch (e) {
@@ -78,59 +61,18 @@ class IpInformationService {
 	}
 
 	// Microservice calls
-	async retriveLocationInformation(ipAddress: string): Promise<ServiceResponseModel> {
+	async fetchData(ipAddress: string, servicename: string): Promise<ServiceResponseModel> {
 		try {
-			logger.debug('Retriving information from the location service', ipAddress);
-			const response = await axios.get(`${SERVICES_URL.LOCATION}?ip=${ipAddress}`);
+			const serviceUrl = SERVICES_URL[servicename];
+			logger.debug(`Retriving information from the ${servicename} service`, ipAddress);
+			const response = await axios.get(`${serviceUrl}?ip=${ipAddress}`);
 			if (response.data?.error) {
 				throw new Error(response.data.error.info);
 			}
 			const serviceResponse = { ...response.data.data } as ServiceResponseModel;
 			return serviceResponse;
 		} catch (e) {
-			logger.error('Requesting information from Location microservice failed', e);
-			throw e;
-		}
-	}
-	async retriveRDAPInformation(ipAddress: string): Promise<ServiceResponseModel> {
-		try {
-			logger.debug('Retriving information from the RDAP service', ipAddress);
-			const response = await axios.get(`${SERVICES_URL.RDAP}?ip=${ipAddress}`);
-			if (response.data?.error) {
-				throw new Error(response.data.error.info);
-			}
-			const serviceResponse = { ...response.data.data } as ServiceResponseModel;
-			return serviceResponse;
-		} catch (e) {
-			logger.error('Requesting information from RDAP microservice failed', e);
-			throw e;
-		}
-	}
-	async retriveReverseDnsInformation(ipAddress: string): Promise<ServiceResponseModel> {
-		try {
-			logger.debug('Retriving information from the Reverse DNS service', ipAddress);
-			const response = await axios.get(`${SERVICES_URL.REVERSE_DNS}?ip=${ipAddress}`);
-			if (response.data.error) {
-				throw new Error(response.data.error?.info);
-			}
-			const serviceResponse = { ...response.data.data } as ServiceResponseModel;
-			return serviceResponse;
-		} catch (e) {
-			logger.error('Requesting information from Reverse DNS microservice failed', e);
-			throw e;
-		}
-	}
-	async retriveVirusTotalInformation(ipAddress: string): Promise<ServiceResponseModel> {
-		try {
-			logger.debug('Retriving information from the Virus total service', ipAddress);
-			const response = await axios.get(`${SERVICES_URL.VIRUS_TOTAL}?ip=${ipAddress}`);
-			if (response.data.error) {
-				throw new Error(response.data.error?.info);
-			}
-			const serviceResponse = { ...response.data.data } as ServiceResponseModel;
-			return serviceResponse;
-		} catch (e) {
-			logger.error('Requesting information from Virus total microservice failed', e);
+			logger.error(`Requesting information from ${servicename} microservice failed`, e);
 			throw e;
 		}
 	}
